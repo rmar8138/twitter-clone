@@ -1,14 +1,29 @@
 const express = require('express');
 const Tweet = require('../../models/Tweet');
+const accessAuthRoute = require('../../middleware/auth');
 const router = express.Router();
 
 // GET /api/tweet
 // Public
-// Get users tweets
+// Get all tweets
 
 router.get('/', (req, res) => {
-  // Add user id later to only get user tweets
   Tweet.find()
+    .then((tweets) => {
+      res.json({ tweets });
+    })
+    .catch((err) => res.status(400).json({ msg: err.message }));
+});
+
+// GET /api/tweet/:id
+// Public
+// Get user tweets
+
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Find all tweets by user id
+  Tweet.find({ user: id })
     .then((tweets) => {
       res.json({ tweets });
     })
@@ -19,10 +34,11 @@ router.get('/', (req, res) => {
 // Private
 // Post new tweet under user
 
-router.post('/', (req, res) => {
-  const { text } = req.body;
+router.post('/', accessAuthRoute, (req, res) => {
+  const { text, user } = req.body;
 
-  const newTweet = new Tweet({ text });
+  // Save tweet to db
+  const newTweet = new Tweet({ text, user });
   newTweet
     .save()
     .then((tweet) => {

@@ -12,6 +12,7 @@ const UserSchema = new Schema({
     type: String,
     trim: true,
     required: true,
+    unique: true,
     validate: {
       validator: function(email) {
         return validator.isEmail(email);
@@ -22,8 +23,6 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    maxlength: 16,
   },
   createdAt: {
     type: Date,

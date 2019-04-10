@@ -1,4 +1,7 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 const User = require('../../models/User');
 const router = express.Router();
 
@@ -19,20 +22,57 @@ router.get('/', (req, res) => {
 // Register new user
 
 router.post('/', (req, res) => {
+  // Construct new user
   const { name, email, password } = req.body;
+  const user = { name, email, password };
 
   // Check if all fields have been entered
   if (!name || !email || !password) {
     return res.status(400).json({ msg: 'Please fill out all the fields' });
   }
 
-  const newUser = new User({ name, email, password });
-  newUser
-    .save()
-    .then((user) => {
-      res.json({ user });
-    })
-    .catch((err) => res.status(400).json({ msg: err.message }));
+  // Generate salt and hash
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return res.json({ msg: 'Error saving password, please try again' });
+    }
+
+    bcrypt.hash(password, salt, (err, hash) => {
+      if (err) {
+        return res.json({ msg: 'Error saving password, please try again' });
+      }
+
+      // Set user password to hash
+      user.password = hash;
+
+      // If email not in use, save user to db
+      User.findOne({ email }).then((userExists) => {
+        if (!userExists) {
+          const newUser = new User(user);
+          newUser
+            .save()
+            .then((user) => {
+              // Generate auth token and send in response
+              jwt.sign(
+                { id: user.id },
+                config.get('secret'),
+                { expiresIn: '1h' },
+                (err, token) => {
+                  if (err) {
+                    return res.status(400).json({ msg: err.message });
+                  }
+
+                  res.json({ user, token });
+                },
+              );
+            })
+            .catch((err) => res.status(400).json({ msg: err.message }));
+        } else {
+          return res.status(400).json({ msg: 'Email already in use' });
+        }
+      });
+    });
+  });
 });
 
 // PATCH /api/user
