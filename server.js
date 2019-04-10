@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const tweet = require('./routes/api/tweet');
+const user = require('./routes/api/user');
 
 const app = express();
 const port = process.env.PORT || 7000; // use heroku environment port, else use localhost:7000
@@ -18,5 +19,6 @@ app.use(express.json());
 
 // Routes
 app.use('/api/tweet', tweet);
+app.use('/api/user', user);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

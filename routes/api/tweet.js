@@ -21,7 +21,6 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const { text } = req.body;
-  const tweet = { text };
 
   const newTweet = new Tweet({ text });
   newTweet
@@ -40,8 +39,17 @@ router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const updatedText = req.body.text;
 
-  Tweet.findByIdAndUpdate(id, { text: updatedText }, { new: true })
+  Tweet.findByIdAndUpdate(
+    id,
+    { text: updatedText, lastUpdatedAt: Date.now() },
+    { new: true },
+  )
     .then((updatedTweet) => {
+      // Error handling for invalid id
+      if (!updatedTweet) {
+        return res.status(400).json({ msg: 'Tweet not found' });
+      }
+
       res.json({
         tweet: updatedTweet,
       });
@@ -55,10 +63,14 @@ router.patch('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
-  const updatedText = req.body.text;
 
   Tweet.findByIdAndDelete(id)
     .then((deletedTweet) => {
+      // Error handling for invalid id
+      if (!updatedTweet) {
+        return res.status(400).json({ msg: 'Tweet not found' });
+      }
+
       res.json({
         tweet: deletedTweet,
       });

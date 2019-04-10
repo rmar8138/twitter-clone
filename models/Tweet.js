@@ -12,6 +12,10 @@ const TweetSchema = new Schema({
     required: true,
     default: Date.now,
   },
+  lastUpdatedAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 const Tweet = mongoose.model('tweet', TweetSchema);
