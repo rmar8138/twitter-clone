@@ -21,7 +21,7 @@ export class Header extends Component {
               <AccountDropdown />
             </NavItem>
             <NavItem className="ml-2">
-              <TweetForm addTweet={this.props.addTweet} />
+              <TweetForm addTweet={this.props.addTweet}>Tweet</TweetForm>
             </NavItem>
           </Nav>
         </Container>

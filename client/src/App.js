@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react';
+import { Provider } from 'react-redux';
 import { Container, Row, Col } from 'reactstrap';
+import store from './store/configureStore';
 import Header from './components/Header';
 import TweetTimeline from './components/TweetTimeline';
 import ProfileWidget from './components/ProfileWidget';
@@ -13,7 +15,6 @@ class App extends Component {
       following: 205,
       followers: 22,
     },
-    tweets: ['Test Tweet 1', 'Test Tweet 2', 'Test Tweet 3'],
   };
 
   addTweet = (tweet) => {
@@ -22,7 +23,7 @@ class App extends Component {
 
   render() {
     return (
-      <Fragment>
+      <Provider store={store}>
         <Header addTweet={this.addTweet} />
         <Container className="mt-4">
           <Row>
@@ -30,11 +31,11 @@ class App extends Component {
               <ProfileWidget currentUser={this.state.currentUser} />
             </Col>
             <Col sm="8">
-              <TweetTimeline tweets={this.state.tweets} />
+              <TweetTimeline />
             </Col>
           </Row>
         </Container>
-      </Fragment>
+      </Provider>
     );
   }
 }

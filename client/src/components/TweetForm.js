@@ -1,20 +1,24 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import uuid from 'uuid';
 import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   Form,
   FormGroup,
   Label,
   Input,
 } from 'reactstrap';
+import { addTweet, editTweet } from '../actions/tweet';
 
 export class TweetForm extends Component {
   state = {
     modalOpen: false,
-    tweet: '',
+    tweet: {
+      tweet: this.props.formType === 'edit' ? this.props.tweet.tweet : '',
+    },
   };
 
   toggle = () => {
@@ -24,21 +28,40 @@ export class TweetForm extends Component {
   };
 
   handleInputChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({
+      tweet: {
+        [e.target.name]: e.target.value,
+      },
+    });
   };
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    this.props.addTweet(this.state.tweet);
-    this.toggle();
+    if (this.props.formType === 'edit') {
+      this.props.editTweet({
+        ...this.state.tweet,
+        id: this.props.tweet.id,
+      });
+      this.toggle();
+    } else {
+      this.props.addTweet({
+        ...this.state.tweet,
+        id: uuid(),
+      });
+      this.toggle();
+    }
   };
 
   render() {
     return (
       <Fragment>
-        <Button onClick={this.toggle}>Tweet</Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Compose new Tweet</ModalHeader>
+        <Button onClick={this.toggle}>{this.props.children}</Button>
+        <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>
+            {this.props.formType === 'edit'
+              ? 'Edit Tweet'
+              : 'Compose new Tweet'}
+          </ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleFormSubmit}>
               <FormGroup>
@@ -46,10 +69,13 @@ export class TweetForm extends Component {
                   onChange={this.handleInputChange}
                   type="textarea"
                   name="tweet"
+                  value={this.state.tweet.tweet}
                   placeholder="What's happening?"
                 />
               </FormGroup>
-              <Button>Tweet</Button>
+              <Button>
+                {this.props.formType === 'edit' ? 'Save changes' : 'Tweet'}
+              </Button>
             </Form>
           </ModalBody>
         </Modal>
@@ -58,4 +84,12 @@ export class TweetForm extends Component {
   }
 }
 
-export default TweetForm;
+const mapDispatchToProps = (dispatch) => ({
+  addTweet: (tweet) => dispatch(addTweet(tweet)),
+  editTweet: (editedTweet) => dispatch(editTweet(editedTweet)),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(TweetForm);
