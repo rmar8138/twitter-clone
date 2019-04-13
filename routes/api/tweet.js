@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
 // Private
 // Post new tweet under user
 
-router.post('/', accessAuthRoute, (req, res) => {
+router.post('/', (req, res) => {
   const { text, user } = req.body;
 
   // Save tweet to db
