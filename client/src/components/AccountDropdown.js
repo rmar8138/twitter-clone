@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Button,
 } from 'reactstrap';
+import { logout } from '../actions/auth';
 
 export class AccountDropdown extends Component {
   state = {
@@ -25,11 +26,18 @@ export class AccountDropdown extends Component {
           Account
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem>Logout</DropdownItem>
+          <DropdownItem onClick={this.props.logout}>Logout</DropdownItem>
         </DropdownMenu>
       </ButtonDropdown>
     );
   }
 }
 
-export default AccountDropdown;
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(logout()),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(AccountDropdown);

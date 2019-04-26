@@ -1,25 +1,22 @@
 import React, { Component, Fragment } from 'react';
 import { Provider } from 'react-redux';
 import { Container, Row, Col } from 'reactstrap';
+import { getTweets } from './actions/tweet';
+import { getUser } from './actions/auth';
 import store from './store/configureStore';
 import Header from './components/Header';
 import TweetTimeline from './components/TweetTimeline';
 import ProfileWidget from './components/ProfileWidget';
 
 class App extends Component {
-  state = {
-    currentUser: {
-      name: 'Ragan Martinez',
-      username: 'rmar8138',
-      tweets: 91,
-      following: 205,
-      followers: 22,
-    },
-  };
-
-  addTweet = (tweet) => {
-    this.setState({ tweets: [...this.state.tweets, tweet] });
-  };
+  componentDidMount() {
+    const token = localStorage.getItem('token');
+    // if token exists, get user info
+    if (token) {
+      store.dispatch(getUser(token));
+    }
+    store.dispatch(getTweets());
+  }
 
   render() {
     return (
@@ -28,7 +25,7 @@ class App extends Component {
         <Container className="mt-4">
           <Row>
             <Col sm="4">
-              <ProfileWidget currentUser={this.state.currentUser} />
+              <ProfileWidget />
             </Col>
             <Col sm="8">
               <TweetTimeline />

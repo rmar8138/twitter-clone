@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const User = require('../../models/User');
 const router = express.Router();
+const accessAuthRoute = require('../../middleware/auth');
 
 // POST /auth/login
 // Public
@@ -27,21 +28,27 @@ router.post('/login', (req, res) => {
       // If user exists, check if password is valid
       bcrypt.compare(password, user.password).then((isMatch) => {
         if (isMatch) {
-          // Generater and send jwt token with user id
-          jwt
-            .sign(
-              { id: user.id },
-              config.get('secret'),
-              { expiresIn: '1h' },
-              (err, token) => {
-                if (err) {
-                  return res.status(400).json({ msg: err.message });
-                }
+          // Generate and send jwt token with user id
+          jwt.sign(
+            { id: user.id },
+            config.get('secret'),
+            { expiresIn: '1h' },
+            (err, token) => {
+              if (err) {
+                return res.status(400).json({ msg: err.message });
+              }
 
-                res.json({ user, token });
-              },
-            )
-            .catch((err) => res.status(400).json({ msg: err.message }));
+              res.json({
+                user: {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  createdAt: user.createdAt,
+                },
+                token,
+              });
+            },
+          );
         } else {
           res.status(401).json({ msg: 'Invalid credentials' });
         }
@@ -50,11 +57,11 @@ router.post('/login', (req, res) => {
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
 
-// POST /auth/user
+// GET /auth/user
 // Private
 // Get user info
 
-router.post('/user', (req, res) => {
+router.get('/user', accessAuthRoute, (req, res) => {
   User.findById(req.user)
     .select('-password') // dont include password when sending user object to client
     .then((user) => {

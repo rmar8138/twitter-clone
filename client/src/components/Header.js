@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 import {
   Container,
   Navbar,
@@ -9,6 +10,7 @@ import {
 } from 'reactstrap';
 import AccountDropdown from './AccountDropdown';
 import TweetForm from './TweetForm';
+import LoginForm from './LoginForm';
 
 export class Header extends Component {
   render() {
@@ -17,11 +19,19 @@ export class Header extends Component {
         <Container>
           <NavbarBrand>Twitter-Clone</NavbarBrand>
           <Nav className="ml-auto">
-            <NavItem>
-              <AccountDropdown />
-            </NavItem>
+            {this.props.isAuthenticated && (
+              <Fragment>
+                <NavItem>
+                  <AccountDropdown />
+                </NavItem>
+                <NavItem className="ml-2">
+                  <TweetForm>Tweet</TweetForm>
+                </NavItem>
+              </Fragment>
+            )}
+
             <NavItem className="ml-2">
-              <TweetForm addTweet={this.props.addTweet}>Tweet</TweetForm>
+              <LoginForm />
             </NavItem>
           </Nav>
         </Container>
@@ -30,4 +40,8 @@ export class Header extends Component {
   }
 }
 
-export default Header;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(Header);

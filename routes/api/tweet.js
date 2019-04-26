@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
 // Private
 // Post new tweet under user
 
-router.post('/', (req, res) => {
+router.post('/', accessAuthRoute, (req, res) => {
   const { text, user } = req.body;
 
   // Save tweet to db
@@ -83,7 +83,7 @@ router.delete('/:id', (req, res) => {
   Tweet.findByIdAndDelete(id)
     .then((deletedTweet) => {
       // Error handling for invalid id
-      if (!updatedTweet) {
+      if (!deletedTweet) {
         return res.status(400).json({ msg: 'Tweet not found' });
       }
 

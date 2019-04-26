@@ -20,14 +20,16 @@ export class TweetTimeline extends Component {
     return (
       <ListGroup>
         {this.props.tweets.map((tweet) => (
-          <ListGroupItem>
-            <ListGroupItemHeading>{tweet.id}</ListGroupItemHeading>
-            <ListGroupItemText>{tweet.tweet}</ListGroupItemText>
+          <ListGroupItem key={tweet._id}>
+            <ListGroupItemHeading>
+              {tweet.user} {tweet.createdAt}
+            </ListGroupItemHeading>
+            <ListGroupItemText>{tweet.text}</ListGroupItemText>
             <TweetForm tweet={tweet} formType="edit">
               Edit Tweet
             </TweetForm>
             <Button
-              onClick={this.handleDeleteTweet.bind(this, tweet.id)}
+              onClick={this.handleDeleteTweet.bind(this, tweet._id)}
               outline
               color="danger"
             >

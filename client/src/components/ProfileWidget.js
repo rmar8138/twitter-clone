@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   Card,
   CardImg,
@@ -12,31 +13,24 @@ import {
 
 export class ProfileWidget extends Component {
   render() {
-    const {
-      name,
-      username,
-      tweets,
-      following,
-      followers,
-    } = this.props.currentUser;
     return (
       <Card>
         <CardBody>
-          <CardTitle>{name}</CardTitle>
-          <CardSubtitle>@{username}</CardSubtitle>
+          <CardTitle>name</CardTitle>
+          <CardSubtitle>username</CardSubtitle>
           <CardText>
             <Row>
               <Col xs="4">
                 <Row>Tweets</Row>
-                <Row>{tweets}</Row>
+                <Row>1</Row>
               </Col>
               <Col xs="4">
                 <Row>Following</Row>
-                <Row>{following}</Row>
+                <Row>1</Row>
               </Col>
               <Col xs="4">
                 <Row>Followers</Row>
-                <Row>{followers}</Row>
+                <Row>1</Row>
               </Col>
             </Row>
           </CardText>
@@ -46,4 +40,8 @@ export class ProfileWidget extends Component {
   }
 }
 
-export default ProfileWidget;
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(ProfileWidget);

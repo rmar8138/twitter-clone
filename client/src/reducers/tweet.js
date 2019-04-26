@@ -1,33 +1,25 @@
 import uuid from 'uuid';
-import { ADD_TWEET, EDIT_TWEET, DELETE_TWEET } from '../actions/types';
+import {
+  ADD_TWEET,
+  EDIT_TWEET,
+  DELETE_TWEET,
+  GET_TWEETS,
+} from '../actions/types';
 
 const initialState = {
-  tweets: [
-    {
-      tweet: 'Test tweet 1',
-      id: uuid(),
-    },
-    {
-      tweet: 'Test tweet 2',
-      id: uuid(),
-    },
-    {
-      tweet: 'Test tweet 3',
-      id: uuid(),
-    },
-  ],
+  tweets: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_TWEET:
       return {
-        tweets: [...state.tweets, action.payload],
+        tweets: [...state.tweets, action.payload.tweet],
       };
     case EDIT_TWEET:
       return {
         tweets: state.tweets.map((tweet) => {
-          if (tweet.id === action.payload.id) {
+          if (tweet._id === action.payload._id) {
             return action.payload;
           } else {
             return tweet;
@@ -37,8 +29,12 @@ export default (state = initialState, action) => {
     case DELETE_TWEET:
       return {
         tweets: state.tweets.filter((tweet) => {
-          return tweet.id !== action.payload;
+          return tweet._id !== action.payload;
         }),
+      };
+    case GET_TWEETS:
+      return {
+        tweets: action.payload,
       };
     default:
       return state;

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import uuid from 'uuid';
 import {
   Modal,
   ModalHeader,
@@ -10,6 +9,7 @@ import {
   FormGroup,
   Label,
   Input,
+  Alert,
 } from 'reactstrap';
 import { addTweet, editTweet } from '../actions/tweet';
 
@@ -17,8 +17,9 @@ export class TweetForm extends Component {
   state = {
     modalOpen: false,
     tweet: {
-      tweet: this.props.formType === 'edit' ? this.props.tweet.tweet : '',
+      text: this.props.formType === 'edit' ? this.props.tweet.text : '',
     },
+    errorMessage: null,
   };
 
   toggle = () => {
@@ -37,16 +38,33 @@ export class TweetForm extends Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
+    // show error message if empty tweet
+    if (!this.state.tweet.text) {
+      return this.setState({ errorMessage: 'Please enter a tweet' });
+    }
+
     if (this.props.formType === 'edit') {
+      // clear fields
+      this.setState({
+        tweet: {
+          text: '',
+        },
+      });
       this.props.editTweet({
-        ...this.state.tweet,
-        id: this.props.tweet.id,
+        text: this.state.tweet.text,
+        _id: this.props.tweet._id,
       });
       this.toggle();
     } else {
+      // clear fields
+      this.setState({
+        tweet: {
+          text: '',
+        },
+      });
       this.props.addTweet({
-        ...this.state.tweet,
-        id: uuid(),
+        text: this.state.tweet.text,
+        user: this.props.user.name,
       });
       this.toggle();
     }
@@ -63,13 +81,16 @@ export class TweetForm extends Component {
               : 'Compose new Tweet'}
           </ModalHeader>
           <ModalBody>
+            {this.state.errorMessage && (
+              <Alert color="danger">{this.state.errorMessage}</Alert>
+            )}
             <Form onSubmit={this.handleFormSubmit}>
               <FormGroup>
                 <Input
                   onChange={this.handleInputChange}
                   type="textarea"
-                  name="tweet"
-                  value={this.state.tweet.tweet}
+                  name="text"
+                  value={this.state.tweet.text}
                   placeholder="What's happening?"
                 />
               </FormGroup>
@@ -84,12 +105,16 @@ export class TweetForm extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   addTweet: (tweet) => dispatch(addTweet(tweet)),
   editTweet: (editedTweet) => dispatch(editTweet(editedTweet)),
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(TweetForm);
