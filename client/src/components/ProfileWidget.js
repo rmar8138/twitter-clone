@@ -12,12 +12,17 @@ import {
 } from 'reactstrap';
 
 export class ProfileWidget extends Component {
+  componentDidMount() {
+    console.log(this.props.user);
+  }
+
   render() {
+    const { name, username } = this.props.user;
     return (
       <Card>
         <CardBody>
-          <CardTitle>name</CardTitle>
-          <CardSubtitle>username</CardSubtitle>
+          <CardTitle>{name}</CardTitle>
+          <CardSubtitle>{username}</CardSubtitle>
           <CardText>
             <Row>
               <Col xs="4">

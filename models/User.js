@@ -8,6 +8,21 @@ const UserSchema = new Schema({
     trim: true,
     required: true,
   },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: function(username) {
+        const regex = RegExp(/^[A-Za-z0-9_-]{3,16}$/);
+        return regex.test(username);
+      },
+      message: (props) =>
+        `${
+          props.value
+        } is not a valid username. Username must be between 3-16 character and can only contain upper or lowercase letters, numbers, dashes and underscores.`,
+    },
+  },
   email: {
     type: String,
     trim: true,

@@ -5,7 +5,17 @@ import { getToken } from './auth';
 export const addTweet = ({ text, user }) => {
   return (dispatch) => {
     axios
-      .post('/api/tweet', { text, user }, getToken())
+      .post(
+        '/api/tweet',
+        {
+          text,
+          userName: user.name,
+          userUsername: user.username,
+          userEmail: user.email,
+          userId: user._id,
+        },
+        getToken(),
+      )
       .then((res) => {
         dispatch({
           type: ADD_TWEET,
@@ -56,6 +66,23 @@ export const getTweets = () => {
       .get('/api/tweet')
       .then((res) => {
         console.log(res.data);
+        dispatch({
+          type: GET_TWEETS,
+          payload: res.data.tweets,
+        });
+      })
+      .catch((err) => {
+        // dispatch error action
+        console.log(err);
+      });
+  };
+};
+
+export const getUserTweets = (id) => {
+  return (dispatch) => {
+    axios
+      .get(`/api/tweet/${id}`)
+      .then((res) => {
         dispatch({
           type: GET_TWEETS,
           payload: res.data.tweets,

@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { Provider } from 'react-redux';
+import { Router, Route, Link } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
-import { getTweets } from './actions/tweet';
+import history from './history';
 import { getUser } from './actions/auth';
 import store from './store/configureStore';
 import Header from './components/Header';
-import TweetTimeline from './components/TweetTimeline';
-import ProfileWidget from './components/ProfileWidget';
+import HomePage from './pages/HomePage';
+import ProfilePage from './pages/ProfilePage';
 
 class App extends Component {
   componentDidMount() {
@@ -15,23 +16,18 @@ class App extends Component {
     if (token) {
       store.dispatch(getUser(token));
     }
-    store.dispatch(getTweets());
   }
 
   render() {
     return (
       <Provider store={store}>
-        <Header addTweet={this.addTweet} />
-        <Container className="mt-4">
-          <Row>
-            <Col sm="4">
-              <ProfileWidget />
-            </Col>
-            <Col sm="8">
-              <TweetTimeline />
-            </Col>
-          </Row>
-        </Container>
+        <Router history={history}>
+          <Header addTweet={this.addTweet} />
+          <Container className="mt-4">
+            <Route exact path="/" component={HomePage} />
+            <Route path="/profile" component={ProfilePage} />
+          </Container>
+        </Router>
       </Provider>
     );
   }

@@ -1,4 +1,3 @@
-import uuid from 'uuid';
 import {
   ADD_TWEET,
   EDIT_TWEET,

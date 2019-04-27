@@ -64,7 +64,7 @@ export class TweetForm extends Component {
       });
       this.props.addTweet({
         text: this.state.tweet.text,
-        user: this.props.user.name,
+        user: this.props.user,
       });
       this.toggle();
     }

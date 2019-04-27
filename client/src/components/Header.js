@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Navbar,
@@ -11,15 +12,18 @@ import {
 import AccountDropdown from './AccountDropdown';
 import TweetForm from './TweetForm';
 import LoginForm from './LoginForm';
+import RegisterForm from './RegisterForm';
 
 export class Header extends Component {
   render() {
     return (
       <Navbar color="light">
         <Container>
-          <NavbarBrand>Twitter-Clone</NavbarBrand>
+          <NavbarBrand>
+            <Link to="/">Twitter-Clone</Link>
+          </NavbarBrand>
           <Nav className="ml-auto">
-            {this.props.isAuthenticated && (
+            {this.props.isAuthenticated ? (
               <Fragment>
                 <NavItem>
                   <AccountDropdown />
@@ -28,11 +32,16 @@ export class Header extends Component {
                   <TweetForm>Tweet</TweetForm>
                 </NavItem>
               </Fragment>
+            ) : (
+              <Fragment>
+                <NavItem className="ml-2">
+                  <LoginForm />
+                </NavItem>
+                <NavItem className="ml-2">
+                  <RegisterForm />
+                </NavItem>
+              </Fragment>
             )}
-
-            <NavItem className="ml-2">
-              <LoginForm />
-            </NavItem>
           </Nav>
         </Container>
       </Navbar>

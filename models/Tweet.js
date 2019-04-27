@@ -16,7 +16,15 @@ const TweetSchema = new Schema({
     type: Date,
     default: null,
   },
-  user: {
+  userName: {
+    type: String,
+    required: true,
+  },
+  userEmail: {
+    type: String,
+    required: true,
+  },
+  userId: {
     type: String,
     required: true,
   },

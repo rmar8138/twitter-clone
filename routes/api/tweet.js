@@ -23,7 +23,9 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
 
   // Find all tweets by user id
-  Tweet.find({ user: id })
+  Tweet.find({
+    userId: id,
+  })
     .then((tweets) => {
       res.json({ tweets });
     })
@@ -35,10 +37,10 @@ router.get('/:id', (req, res) => {
 // Post new tweet under user
 
 router.post('/', accessAuthRoute, (req, res) => {
-  const { text, user } = req.body;
+  const { text, userName, userEmail, userId } = req.body;
 
   // Save tweet to db
-  const newTweet = new Tweet({ text, user });
+  const newTweet = new Tweet({ text, userName, userEmail, userId });
   newTweet
     .save()
     .then((tweet) => {

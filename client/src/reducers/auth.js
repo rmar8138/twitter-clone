@@ -12,6 +12,7 @@ const initialState = {
   user: {
     id: null,
     name: null,
+    username: null,
     email: null,
   },
   token: null,
@@ -33,6 +34,8 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         userLoading: false,
       };
+    case LOGIN_FAIL:
+    case REGISTER_FAIL:
     case LOGOUT:
       // clear token from local storage here
       localStorage.removeItem('token');
@@ -40,6 +43,7 @@ export default (state = initialState, action) => {
         user: {
           id: null,
           name: null,
+          username: null,
           email: null,
         },
         token: null,

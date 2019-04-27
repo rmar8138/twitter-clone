@@ -11,13 +11,14 @@ import {
   Input,
   Alert,
 } from 'reactstrap';
-import history from '../history';
-import { login } from '../actions/auth';
+import { register } from '../actions/auth';
 import { clearErrors } from '../actions/error';
 
-export class LoginForm extends Component {
+export class RegisterForm extends Component {
   state = {
     modalOpen: false,
+    name: '',
+    username: '',
     email: '',
     password: '',
     errorMessage: null,
@@ -28,7 +29,7 @@ export class LoginForm extends Component {
 
     // If login fail, set error message
     if (error !== prevProps.error) {
-      if (error.id === 'LOGIN_FAIL') {
+      if (error.id === 'REGISTER_FAIL') {
         this.setState({ errorMessage: error.msg.msg });
       } else {
         this.setState({ errorMessage: null });
@@ -58,26 +59,47 @@ export class LoginForm extends Component {
   };
 
   handleFormSubmit = (e) => {
+    const { name, username, email, password } = this.state;
     e.preventDefault();
-    this.props.login({
-      email: this.state.email,
-      password: this.state.password,
+    this.props.register({
+      name,
+      username,
+      email,
+      password,
     });
   };
 
   render() {
     return (
       <Fragment>
-        {!this.props.isAuthenticated && (
-          <Button onClick={this.toggle}>Login</Button>
-        )}
+        <Button onClick={this.toggle}>Register</Button>
         <Modal isOpen={this.state.modalOpen} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Login</ModalHeader>
+          <ModalHeader toggle={this.toggle}>Register</ModalHeader>
           <ModalBody>
             {this.state.errorMessage && (
               <Alert color="danger">{this.state.errorMessage}</Alert>
             )}
             <Form onSubmit={this.handleFormSubmit}>
+              <FormGroup>
+                <Label for="name">Name</Label>
+                <Input
+                  onChange={this.handleInputChange}
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Name"
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="name">Username</Label>
+                <Input
+                  onChange={this.handleInputChange}
+                  type="text"
+                  name="username"
+                  id="username"
+                  placeholder="Username"
+                />
+              </FormGroup>
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input
@@ -98,7 +120,7 @@ export class LoginForm extends Component {
                   placeholder="Password"
                 />
               </FormGroup>
-              <Button>Login</Button>
+              <Button>Register</Button>
             </Form>
           </ModalBody>
         </Modal>
@@ -113,11 +135,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  login: (credentials) => dispatch(login(credentials)),
+  register: (credentials) => dispatch(register(credentials)),
   clearErrors: () => dispatch(clearErrors()),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(LoginForm);
+)(RegisterForm);

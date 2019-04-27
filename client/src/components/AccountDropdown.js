@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
+import history from '../history';
 import { logout } from '../actions/auth';
 
 export class AccountDropdown extends Component {
@@ -19,6 +20,11 @@ export class AccountDropdown extends Component {
     }));
   };
 
+  handleLogout = () => {
+    this.props.logout();
+    history.push('/');
+  };
+
   render() {
     return (
       <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
@@ -26,7 +32,10 @@ export class AccountDropdown extends Component {
           Account
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem onClick={this.props.logout}>Logout</DropdownItem>
+          <DropdownItem onClick={() => history.push('/profile')}>
+            Profile
+          </DropdownItem>
+          <DropdownItem onClick={this.handleLogout}>Logout</DropdownItem>
         </DropdownMenu>
       </ButtonDropdown>
     );

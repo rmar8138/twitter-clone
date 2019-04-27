@@ -22,7 +22,7 @@ export class TweetTimeline extends Component {
         {this.props.tweets.map((tweet) => (
           <ListGroupItem key={tweet._id}>
             <ListGroupItemHeading>
-              {tweet.user} {tweet.createdAt}
+              {tweet.userName} {tweet.createdAt}
             </ListGroupItemHeading>
             <ListGroupItemText>{tweet.text}</ListGroupItemText>
             <TweetForm tweet={tweet} formType="edit">

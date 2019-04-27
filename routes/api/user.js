@@ -23,11 +23,11 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   // Construct new user
-  const { name, email, password } = req.body;
-  const user = { name, email, password };
+  const { name, username, email, password } = req.body;
+  const user = { name, username, email, password };
 
   // Check if all fields have been entered
-  if (!name || !email || !password) {
+  if (!name || !username || !email || !password) {
     return res.status(400).json({ msg: 'Please fill out all the fields' });
   }
 

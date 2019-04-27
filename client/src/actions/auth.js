@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getUserTweets } from './tweet';
 import { returnErrors, clearErrors } from './error';
 import {
   LOGIN_SUCCESS,
@@ -10,6 +11,26 @@ import {
   USER_LOADED,
   GET_ERRORS,
 } from '../actions/types';
+
+export const register = ({ name, username, email, password }) => {
+  return (dispatch) => {
+    axios
+      .post('/api/user', { name, username, email, password })
+      .then((res) => {
+        dispatch({
+          type: REGISTER_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        const { data, status } = err.response;
+        dispatch(returnErrors(data, status, 'REGISTER_FAIL'));
+        dispatch({
+          type: REGISTER_FAIL,
+        });
+      });
+  };
+};
 
 export const login = ({ email, password }) => {
   return (dispatch) => {
@@ -50,6 +71,9 @@ export const getUser = () => {
           type: USER_LOADED,
           payload: res.data.user,
         });
+        console.log(res.data.user._id);
+        // get user tweets
+        dispatch(getUserTweets(res.data.user._id));
       })
       .catch((err) => {
         console.log(err);
