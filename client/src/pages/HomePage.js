@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'reactstrap';
+import UsersWidget from '../components/UsersWidget';
 import ProfileWidget from '../components/ProfileWidget';
 import TweetTimeline from '../components/TweetTimeline';
 
@@ -7,7 +8,9 @@ export class HomePage extends Component {
   render() {
     return (
       <Row>
-        <h1>This is the home page bruh</h1>
+        <Col sm="4">
+          <UsersWidget />
+        </Col>
       </Row>
     );
   }

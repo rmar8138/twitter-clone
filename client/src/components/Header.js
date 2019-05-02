@@ -26,7 +26,7 @@ export class Header extends Component {
             {this.props.isAuthenticated ? (
               <Fragment>
                 <NavItem>
-                  <AccountDropdown />
+                  <AccountDropdown user={this.props.user} />
                 </NavItem>
                 <NavItem className="ml-2">
                   <TweetForm>Tweet</TweetForm>
@@ -51,6 +51,7 @@ export class Header extends Component {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps)(Header);

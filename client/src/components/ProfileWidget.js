@@ -10,19 +10,49 @@ import {
   Row,
   Col,
 } from 'reactstrap';
+import axios from 'axios';
 
 export class ProfileWidget extends Component {
+  state = {
+    dataLoaded: false,
+    user: {
+      _id: null,
+      name: null,
+      username: null,
+      email: null,
+      createdAt: null,
+    },
+  };
+
   componentDidMount() {
-    console.log(this.props.user);
+    const { username } = this.props;
+
+    // get user info
+    axios
+      .get(`/api/user/${username}`)
+      .then((res) => {
+        this.setState({
+          dataLoaded: true,
+          user: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+  }
+
+  componentWillUnmount() {
+    this.setState({ dataLoaded: false });
   }
 
   render() {
-    const { name, username } = this.props.user;
-    return (
+    const { name, username } = this.state.user;
+    return this.state.dataLoaded ? (
       <Card>
         <CardBody>
           <CardTitle>{name}</CardTitle>
           <CardSubtitle>{username}</CardSubtitle>
+          <CardSubtitle>
+            {this.state.user._id === this.props.user._id && 'This you brah'}
+          </CardSubtitle>
           <CardText>
             <Row>
               <Col xs="4">
@@ -41,6 +71,8 @@ export class ProfileWidget extends Component {
           </CardText>
         </CardBody>
       </Card>
+    ) : (
+      <div>Loading user</div>
     );
   }
 }

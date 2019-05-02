@@ -32,7 +32,7 @@ export class AccountDropdown extends Component {
           Account
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem onClick={() => history.push('/profile')}>
+          <DropdownItem onClick={() => history.push(`/${this.props.user.username}`)}>
             Profile
           </DropdownItem>
           <DropdownItem onClick={this.handleLogout}>Logout</DropdownItem>

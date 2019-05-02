@@ -11,8 +11,23 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   User.find()
+    .select('-password') // dont include password when sending user object to client
     .then((users) => {
       res.json({ users });
+    })
+    .catch((err) => res.status(400).json({ msg: err.message }));
+});
+
+// GET /api/user/:username
+// Public
+// Get user by username
+
+router.get('/:username', (req, res) => {
+  const { username } = req.params;
+  User.find({ username })
+    .select('-password') // dont include password when sending user object to client
+    .then((user) => {
+      res.json(...user);
     })
     .catch((err) => res.status(400).json({ msg: err.message }));
 });
@@ -30,6 +45,13 @@ router.post('/', (req, res) => {
   if (!name || !username || !email || !password) {
     return res.status(400).json({ msg: 'Please fill out all the fields' });
   }
+
+  // Check if username exists
+  User.findOne({ username }).then((userExists) => {
+    if (userExists) {
+      return res.status(400).json({ msg: 'Username already exists' });
+    }
+  });
 
   // Generate salt and hash
   bcrypt.genSalt(10, (err, salt) => {
